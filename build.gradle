@@ -1,0 +1,102 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group 'com.enwerevincent.invest'
+version = '1.0'
+sourceCompatibility = '11'
+
+ext{
+    repoHome = System.getenv()['LIB_LOCAL_REPO']
+    libraryId = 'iw-commons-resources'
+    libraryName = 'iwCommonDataMavenRepo'
+    libraryDesc = 'Resources For Investment Website Application'
+}
+
+java{
+    withJavadocJar()
+    withSourcesJar()
+}
+
+
+publishing{
+    publications{
+        iwCommonDataLibrary(MavenPublication){
+            artifactId = "${libraryId}"
+            from components.java
+
+            pom{
+                name = "${libraryName}"
+                description = "${libraryDesc}"
+                licenses {
+                    name = 'The Apache License , Version 2.0'
+                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "${libraryName}"
+            url = "${repoHome}"
+        }
+    }
+}
+
+configurations {
+    developmentOnly
+    runtimeClassPath{
+        extendsFrom developmentOnly
+    }
+    compileOnly{
+        extendsFrom annotationProcessor
+    }
+}
+repositories {
+    maven{
+        url = "${repoHome}"
+    }
+   mavenCentral()
+}
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+ //   implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    implementation 'org.apache.groovy:groovy:4.0.2'
+    implementation 'org.apache.commons:commons-collections4:4.1'
+    implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.5.Final'
+    implementation 'org.projectlombok:lombok:1.18.22'
+
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}
